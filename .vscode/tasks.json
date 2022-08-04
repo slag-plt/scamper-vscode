@@ -12,18 +12,17 @@
 				"reveal": "never",
 				"group": "watchers"
 			},
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			}
+			"group": "build"
 		},
 		{
-      "type": "npm",
-      "script": "watch-web",
-      "group": "build",
-      "isBackground": true,
-      "problemMatcher": ["$ts-webpack-watch"]
-    },
+			"type": "npm",
+			"script": "watch-web",
+			"group": "build",
+			"isBackground": true,
+			"problemMatcher": [
+				"$ts-webpack-watch"
+			]
+		},
 		{
 			"type": "npm",
 			"script": "watch-tests",
@@ -42,6 +41,17 @@
 				"npm: watch-tests"
 			],
 			"problemMatcher": []
+		},
+		{
+			"type": "npm",
+			"script": "compile",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [],
+			"label": "npm: compile",
+			"detail": "webpack"
 		}
 	]
 }

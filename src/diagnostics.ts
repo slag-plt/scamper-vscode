@@ -22,7 +22,7 @@ export function mkDiagnosticsCallback(diagnostics: vscode.DiagnosticCollection) 
               : new vscode.Range(0, 0, 0, 0),
             message: err.message,
             severity: vscode.DiagnosticSeverity.Error,
-            source: 'schemejs'
+            source: 'scamper'
           })
         })
       }

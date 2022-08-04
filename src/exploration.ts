@@ -31,7 +31,7 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 				"dist",
 				"toolkit.js", // A toolkit.min.js file is also available
 			]);
-			console.log(toolkitUri)
+			const mainUri = getUri(panel.webview, extensionUri, ["webview-ui", "main.js"]);
 
 			panel.webview.onDidReceiveMessage(msg => {
 				if (msg.command === 'init') {
@@ -73,7 +73,7 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 
 					#controls {
 						display: flex;
-						justify-content: center;
+						justify-content: start;
 						flex-direction: column;
 					}
 
@@ -87,23 +87,29 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 					}
 
 					#display {
-						padding: 10px;
+						padding: 5px;
+						height: 90vh;
 						flex-grow: 1;
 						flex-direction: column; 
 					}
 
 					#program {
 						border: 1px solid var(--vscode-editor-foreground);
-						flex-grow: 1;
+						overflow-x: scroll;
+						overflow-y: scroll;
+						width: 100%;
+						height: 90%;
 					}
 
 					#input {
 						font-family: var(--vscode-editor-font-family);
 						font-size: var(--vscode-editor-font-size);
 						width: 100%;
+						height: 10%;
 					}
 				</style>
 				<script type="module" src="${toolkitUri}"></script>
+				<script type="module" src="${mainUri}"></script>
 				</head>
 				<body>
 				<div id="panel">

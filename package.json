@@ -33,11 +33,8 @@
         "command": "scamper.traceProgram",
         "title": "Trace Program",
         "category": "Scamper",
-        "icon": {
-          "dark": "./src/img/play-circle-dark.svg",
-          "light": "./src/img/play-circle-light.svg"
-        },
-        "when": "editorLangId == scamper"
+        "icon": "$(debug-start)",
+        "when": "editorFocus && editorLangId == scamper"
       }
     ],
     "languages": [
@@ -70,9 +67,9 @@
     "watch-web": "webpack --watch",
     "package-web": "webpack --mode production --devtool hidden-source-map",
     "lint": "eslint src --ext ts",
-		"compile-tests": "tsc -p . --outDir out",
-		"watch-tests": "tsc -p . -w --outDir out",
-		"pretest": "npm run compile-tests && npm run compile && npm run lint"
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint"
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
