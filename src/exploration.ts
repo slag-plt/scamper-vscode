@@ -1,9 +1,6 @@
 import * as vscode from 'vscode'
 import * as scamper from 'scamper-lang'
-
-function getUri(webview: vscode.Webview, extensionUri: vscode.Uri, pathList: string[]) {
-  return webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, ...pathList));
-}
+import * as webview from './webview'
 
 export function traceProgramCommand(extensionUri: vscode.Uri) {
 	return function() {
@@ -23,15 +20,6 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 				vscode.ViewColumn.Beside,
 				{ enableScripts: true })
 
-			const toolkitUri = getUri(panel.webview, extensionUri, [
-				"node_modules",
-				"@vscode",
-				"webview-ui-toolkit",
-				"dist",
-				"toolkit.js", // A toolkit.min.js file is also available
-			]);
-			const mainUri = getUri(panel.webview, extensionUri, ["webview-ui", "main.js"]);
-
 			panel.webview.onDidReceiveMessage(msg => {
 				if (msg.command === 'init') {
 					// TODO: Nothing to do?
@@ -50,67 +38,11 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 				}
 				panel.webview.postMessage({
 					step: trace.currentStep(),
-					value: trace.currentState().toString()
+					value: scamper.programToHtml(trace.currentState().prog)
 				})
 			})
 
-			panel.webview.html = `<!DOCTYPE html>
-				<html lang="en">
-				<head>
-				<meta charset="UTF-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<style>
-					body {
-						color: var(--vscode-editor-foreground);
-						font-family: var(--vscode-editor-font-family);
-						font-size: var(--vscode-editor-font-size);
-					}
-					#panel {
-						display: flex;
-						height: 100%;
-					}
-
-					#controls {
-						display: flex;
-						justify-content: start;
-						flex-direction: column;
-					}
-
-					#controls vscode-button {
-						width: 100px;
-						margin: 0 auto;
-					}
-
-					#step {
-						text-align: center;
-					}
-
-					#display {
-						padding: 5px;
-						height: 90vh;
-						flex-grow: 1;
-						flex-direction: column; 
-					}
-
-					#program {
-						border: 1px solid var(--vscode-editor-foreground);
-						overflow-x: scroll;
-						overflow-y: scroll;
-						width: 100%;
-						height: 90%;
-					}
-
-					#input {
-						font-family: var(--vscode-editor-font-family);
-						font-size: var(--vscode-editor-font-size);
-						width: 100%;
-						height: 10%;
-					}
-				</style>
-				<script type="module" src="${toolkitUri}"></script>
-				<script type="module" src="${mainUri}"></script>
-				</head>
-				<body>
+			const body = `
 				<div id="panel">
 					<div id="controls">
 						<vscode-button appearance="primary" id="stepF">Step (→)</vscode-button>
@@ -134,7 +66,7 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 					window.addEventListener('message', event => {
 						const state = event.data;
 						document.getElementById('step').innerText = 'Step ' + state.step;
-						document.getElementById('program').innerText = state.value;
+						document.getElementById('program').innerHTML = state.value;
 					});
 
 					document.getElementById('stepF').onclick = () => {
@@ -165,6 +97,8 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 				</script>
 				</body>
 				</html>`
+
+			panel.webview.html = webview.emitHTMLDocument(extensionUri, panel.webview, '', body)
 		}
 	}
 }
