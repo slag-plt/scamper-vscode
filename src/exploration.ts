@@ -7,7 +7,6 @@ function getUri(webview: vscode.Webview, extensionUri: vscode.Uri, pathList: str
 
 export function traceProgramCommand(extensionUri: vscode.Uri) {
 	return function() {
-		console.log(extensionUri)
 		const src = vscode.window.activeTextEditor?.document.getText()
 		if (src === undefined) {
 			vscode.window.showErrorMessage('No source code to run!')

@@ -23,6 +23,10 @@
     "menus": {
       "editor/title": [
         {
+          "command": "scamper.runProgram",
+          "group": "navigation"
+        },
+        {
           "command": "scamper.traceProgram",
           "group": "navigation"
         }
@@ -32,6 +36,13 @@
       {
         "command": "scamper.traceProgram",
         "title": "Trace Program",
+        "category": "Scamper",
+        "icon": "$(debug)",
+        "when": "editorFocus && editorLangId == scamper"
+      },
+      {
+        "command": "scamper.runProgram",
+        "title": "Run Program",
         "category": "Scamper",
         "icon": "$(debug-start)",
         "when": "editorFocus && editorLangId == scamper"
