@@ -22,7 +22,11 @@ export function runProgramCommand(extensionUri: vscode.Uri) {
         body = `Error(s) occurred during compilation:\n${scamper.errorToString(result)}`
 			} else { 
         const state: scamper.ProgramState = new scamper.ProgramState(result.value).evaluate()
-        body = scamper.programToHtml(state.prog)
+        body = `${scamper.programToHtml(state.prog)}
+				<script>
+					renderAllDrawings()
+				</script>
+				`
       }
 
 			panel.webview.html = webview.emitHTMLDocument(extensionUri, panel.webview, '', body)

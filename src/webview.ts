@@ -7,6 +7,11 @@ const commonStyleDecl: string = `<style>
     font-family: var(--vscode-editor-font-family);
     font-size: var(--vscode-editor-font-size);
   }
+
+  .scamper-output {
+    margin-bottom: 2em;
+  }
+
   #panel {
     display: flex;
     height: 100%;

@@ -38,7 +38,7 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 				}
 				panel.webview.postMessage({
 					step: trace.currentStep(),
-					value: scamper.programToHtml(trace.currentState().prog)
+					value: scamper.programToHtml(trace.currentState().prog, true)
 				})
 			})
 
@@ -64,9 +64,10 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 					const vscode = acquireVsCodeApi();
 
 					window.addEventListener('message', event => {
-						const state = event.data;
-						document.getElementById('step').innerText = 'Step ' + state.step;
-						document.getElementById('program').innerHTML = state.value;
+						const state = event.data
+						document.getElementById('step').innerText = 'Step ' + state.step
+						document.getElementById('program').innerHTML = state.value
+						renderAllDrawings()
 					});
 
 					document.getElementById('stepF').onclick = () => {
