@@ -45,6 +45,7 @@ const commonStyleDecl: string = `<style>
     overflow-y: scroll;
     width: 100%;
     height: 90%;
+    whitespace: pre;
   }
 
   #input {

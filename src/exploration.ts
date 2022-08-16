@@ -33,6 +33,9 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 					trace.revertPrevStmt()
 				} else if (msg.command === 'eval') {
 					trace.evaluateProg()
+				} else if (msg.command === 'add') {
+					trace.addStmt(msg.value)
+					trace.evaluateProg()
 				} else if (msg.command === 'reset') {
 					trace.resetProg()
 				}
@@ -56,8 +59,9 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 					<div id="display">
 						<div id="program">Code</div>
 						<form id="repl-form">
-							<vscode-text-area id="input">Additional Statements</vscode-text-area>
+							<vscode-text-area id="input" placeholder="(+ 1 1)">Additional Statements</vscode-text-area>
 						</form>
+						<vscode-button appearance="primary" id="add">Add</vscode-button>
 					</div>
 				</div>
 				<script>
@@ -92,6 +96,14 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 
 					document.getElementById('reset').onclick = () => {
 						vscode.postMessage({ command: 'reset' });
+					}
+
+					document.getElementById('add').onclick = () => {
+						if (input.value.length > 0) {
+							const input = document.getElementById('input')
+							vscode.postMessage({ command: 'add', value: input.value })
+							input.value = ""
+						}
 					}
 
 					vscode.postMessage({ command: 'init' });

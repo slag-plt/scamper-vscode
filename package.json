@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/slag-plt/scamper-vscode.git"
   },
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.68.1"
   },
@@ -19,16 +19,19 @@
   ],
   "main": "./dist/extension.js",
   "browser": "./dist/extension.js",
+  "icon": "./scamper-icon-128.png",
   "contributes": {
     "menus": {
       "editor/title": [
         {
           "command": "scamper.runProgram",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "editorLangId == scamper"
         },
         {
           "command": "scamper.traceProgram",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "editorLangId == scamper"
         }
       ]
     },
@@ -37,15 +40,13 @@
         "command": "scamper.traceProgram",
         "title": "Trace Program",
         "category": "Scamper",
-        "icon": "$(debug)",
-        "when": "editorFocus && editorLangId == scamper"
+        "icon": "$(debug)"
       },
       {
         "command": "scamper.runProgram",
         "title": "Run Program",
         "category": "Scamper",
-        "icon": "$(debug-start)",
-        "when": "editorFocus && editorLangId == scamper"
+        "icon": "$(debug-start)"
       }
     ],
     "languages": [
@@ -102,6 +103,6 @@
   },
   "dependencies": {
     "@vscode/webview-ui-toolkit": "^1.0.0",
-    "scamper-lang": "^1.0.0-alpha.2"
+    "scamper-lang": "^1.0.0-alpha.3"
   }
 }
