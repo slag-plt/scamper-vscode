@@ -19,7 +19,7 @@
   ],
   "main": "./dist/extension.js",
   "browser": "./dist/extension.js",
-  "icon": "./scamper-icon-128.png",
+  "icon": "scamper-icon-128.png",
   "contributes": {
     "menus": {
       "editor/title": [
