@@ -21,6 +21,26 @@
   "browser": "./dist/extension.js",
   "icon": "scamper-icon-128.png",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "scamper-container",
+          "title": "Scamper",
+          "icon": "$(squirrel)"
+        }
+      ]
+    },
+    "views": {
+      "scamper-container": [
+        {
+          "type": "webview",
+          "id": "scamper-libs",
+          "name": "Library Documentation",
+          "contextualTitle": "Library Documentation",
+          "contents": "Scamper!"
+        }
+      ]
+    },
     "menus": {
       "editor/title": [
         {
@@ -86,6 +106,7 @@
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
+    "@types/markdown-it": "^12.2.3",
     "@types/mocha": "^9.1.1",
     "@types/node": "16.x",
     "@types/vscode": "^1.68.1",
@@ -103,6 +124,7 @@
   },
   "dependencies": {
     "@vscode/webview-ui-toolkit": "^1.0.0",
+    "markdown-it": "^13.0.1",
     "scamper-lang": "^1.0.0-alpha.3"
   }
 }
