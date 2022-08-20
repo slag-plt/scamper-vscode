@@ -1,9 +1,8 @@
+import { marked } from 'marked'
 import * as vscode from 'vscode'
 import * as scamper from 'scamper-lang'
-import MarkdownIt = require("markdown-it")
-import * as webview from './webview'
 
-const md = new MarkdownIt()
+import * as webview from './webview'
 
 function libToHTML(lib: string): string {
   const env = lib === 'Prelude' ? scamper.preludeEnv : scamper.internalLibs.get(lib)!
@@ -18,7 +17,7 @@ function libToHTML(lib: string): string {
 function entryToHTML(name: string, entry: scamper.EnvEntry): string {
   return `
     <vscode-button style="width: 100%;" appearance="secondary" class="binding">${name}</vscode-button>
-    <div style="display: none;" class="description">${entry.doc ? md.render(entry.doc.docToMarkdown()) : '<em>No documentation available</em>'}</div> 
+    <div style="display: none;" class="description">${entry.doc ? marked(entry.doc.docToMarkdown()) : '<em>No documentation available</em>'}</div> 
   `
 }
 
