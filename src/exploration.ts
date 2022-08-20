@@ -41,7 +41,7 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 				}
 				panel.webview.postMessage({
 					step: trace.currentStep(),
-					value: scamper.programToHtml(trace.currentState().prog, true)
+					value: scamper.progToString(0, trace.currentState().prog, true, true)
 				})
 			})
 

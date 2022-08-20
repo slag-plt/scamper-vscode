@@ -22,7 +22,7 @@ export function runProgramCommand(extensionUri: vscode.Uri) {
         body = `Error(s) occurred during compilation:\n${scamper.errorToString(result)}`
 			} else { 
         const state: scamper.ProgramState = new scamper.ProgramState(result.value).evaluate()
-        body = `${scamper.programToHtml(state.prog)}
+        body = `<div id="program">${scamper.progToString(0, state.prog, false, true)}</div>
 				<script>
 					emitWidgets()
 				</script>

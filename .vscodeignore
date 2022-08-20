@@ -333,3 +333,8 @@ node_modules/isexe
 node_modules/koa
 node_modules/inflight
 node_modules/setprototypeof
+node_modules/markdown-it
+node_modules/entities
+node_modules/linkify-it
+node_modules/mdurl
+node_modules/uc.micro

@@ -45,7 +45,8 @@ const commonStyleDecl: string = `<style>
     overflow-y: scroll;
     width: 100%;
     height: 90%;
-    whitespace: pre;
+    white-space: pre-wrap;
+    padding: 1em;
   }
 
   #input {
@@ -76,6 +77,9 @@ export function emitHTMLDocument (extensionUri: vscode.Uri, webview: vscode.Webv
     'index.js'
   ])
 
+  const jzzUri = getUri(webview, extensionUri, [ 'web', 'JZZ.js' ])
+  const jzzTinyUri = getUri(webview, extensionUri, [ 'web', 'JZZ.synth.Tiny.js' ])
+
   return `<!DOCTYPE html>
   <html lang="en">
   <head>
@@ -83,8 +87,8 @@ export function emitHTMLDocument (extensionUri: vscode.Uri, webview: vscode.Webv
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="module" src="${toolkitUri}"></script>
     <script type="module" src="${scamperUri}"></script>
-    <script src="https://unpkg.com/jzz"></script>
-    <script src="https://unpkg.com/jzz-synth-tiny"></script>
+    <script src="${jzzUri}"></script>
+    <script src="${jzzTinyUri}"></script>
     ${commonStyleDecl}
     ${head}
     ${scamper.emitSupportScript()}
