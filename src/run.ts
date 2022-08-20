@@ -24,7 +24,7 @@ export function runProgramCommand(extensionUri: vscode.Uri) {
         const state: scamper.ProgramState = new scamper.ProgramState(result.value).evaluate()
         body = `${scamper.programToHtml(state.prog)}
 				<script>
-					renderAllDrawings()
+					emitWidgets()
 				</script>
 				`
       }

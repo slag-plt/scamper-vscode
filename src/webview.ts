@@ -83,6 +83,8 @@ export function emitHTMLDocument (extensionUri: vscode.Uri, webview: vscode.Webv
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="module" src="${toolkitUri}"></script>
     <script type="module" src="${scamperUri}"></script>
+    <script src="https://unpkg.com/jzz"></script>
+    <script src="https://unpkg.com/jzz-synth-tiny"></script>
     ${commonStyleDecl}
     ${head}
     ${scamper.emitSupportScript()}

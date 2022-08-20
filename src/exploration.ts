@@ -71,7 +71,7 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 						const state = event.data
 						document.getElementById('step').innerText = 'Step ' + state.step
 						document.getElementById('program').innerHTML = state.value
-						renderAllDrawings()
+						emitWidgets()
 					});
 
 					document.getElementById('stepF').onclick = () => {
