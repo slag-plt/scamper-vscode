@@ -102,11 +102,12 @@
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "open-in-browser": "vscode-test-web --extensionDevelopmentPath=. ."
+    "open-in-browser": "vscode-test-web --browser 'none' --extensionDevelopmentPath=. ."
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
     "@types/markdown-it": "^12.2.3",
+    "@types/marked": "^4.0.5",
     "@types/mocha": "^9.1.1",
     "@types/node": "16.x",
     "@types/vscode": "^1.68.1",
@@ -124,7 +125,7 @@
   },
   "dependencies": {
     "@vscode/webview-ui-toolkit": "^1.0.0",
-    "markdown-it": "^13.0.1",
+    "marked": "^4.0.18",
     "scamper-lang": "^1.0.0-alpha.4"
   }
 }
