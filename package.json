@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/slag-plt/scamper-vscode.git"
   },
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.68.1"
   },
@@ -21,6 +21,9 @@
   "browser": "./dist/extension.js",
   "icon": "scamper-icon-128.png",
   "contributes": {
+    "capabilities" : {
+      "documentFormattingProvider" : "true"
+    },
     "viewsContainers": {
       "activitybar": [
         {
@@ -106,7 +109,6 @@
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
-    "@types/markdown-it": "^12.2.3",
     "@types/marked": "^4.0.5",
     "@types/mocha": "^9.1.1",
     "@types/node": "16.x",
@@ -123,6 +125,6 @@
   "dependencies": {
     "@vscode/webview-ui-toolkit": "^1.0.0",
     "marked": "^4.0.18",
-    "scamper-lang": "^1.0.0-alpha.4"
+    "scamper-lang": "^1.0.0-alpha.5"
   }
 }

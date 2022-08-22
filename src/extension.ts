@@ -1,5 +1,6 @@
 import * as vscode from 'vscode'
 import { DocProvider } from './docs'
+import { DocFormatter } from './formatter'
 import { traceProgramCommand } from './exploration'
 import { mkDiagnosticsCallback } from './diagnostics'
 import { runProgramCommand } from './run'
@@ -14,6 +15,8 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(diagnostics)
 
   context.subscriptions.push(vscode.window.registerWebviewViewProvider('scamper-libs', new DocProvider(context.extensionUri)))
+
+  context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider('scamper', new DocFormatter()))
 
   console.log('scamper-vscode extension loaded!')
 }
