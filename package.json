@@ -21,8 +21,8 @@
   "browser": "./dist/extension.js",
   "icon": "scamper-icon-128.png",
   "contributes": {
-    "capabilities" : {
-      "documentFormattingProvider" : "true"
+    "capabilities": {
+      "documentFormattingProvider": "true"
     },
     "viewsContainers": {
       "activitybar": [
@@ -125,6 +125,6 @@
   "dependencies": {
     "@vscode/webview-ui-toolkit": "^1.0.0",
     "marked": "^4.0.18",
-    "scamper-lang": "^1.0.0-alpha.5"
+    "scamper-lang": "^1.0.0"
   }
 }
