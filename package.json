@@ -125,6 +125,6 @@
   "dependencies": {
     "@vscode/webview-ui-toolkit": "^1.0.0",
     "marked": "^4.0.18",
-    "scamper-lang": "^1.0.0"
+    "scamper-lang": "^1.0.1"
   }
 }
