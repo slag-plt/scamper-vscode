@@ -12,7 +12,7 @@ export function runProgramCommand(extensionUri: vscode.Uri) {
 
 			const panel = vscode.window.createWebviewPanel(
 				'scamper-exploration',
-				`Scamper: Output (${vscode.window.activeTextEditor?.document.fileName})`,
+				`Scamper: Output`,
 				vscode.ViewColumn.Beside,
 				{ enableScripts: true })
 

@@ -16,7 +16,7 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 			const trace: scamper.ProgramTrace = new scamper.ProgramTrace(new scamper.ProgramState(result.value))
 			const panel = vscode.window.createWebviewPanel(
 				'scamper-exploration',
-				`Scamper: Program Exploration (${vscode.window.activeTextEditor?.document.fileName})`,
+				`Scamper: Program Explorer`,
 				vscode.ViewColumn.Beside,
 				{ enableScripts: true })
 
