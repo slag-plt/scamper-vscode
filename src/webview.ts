@@ -70,13 +70,6 @@ export function emitHTMLDocument (extensionUri: vscode.Uri, webview: vscode.Webv
     "toolkit.min.js",
   ])
 
-  const scamperUri = getUri(webview, extensionUri, [
-    'node_modules',
-    'scamper-lang',
-    'dist',
-    'index.js'
-  ])
-
   const scamperBundleUri = getUri(webview, extensionUri, [
     'node_modules',
     'scamper-lang',
@@ -85,21 +78,14 @@ export function emitHTMLDocument (extensionUri: vscode.Uri, webview: vscode.Webv
     'bundle.js'
   ])
 
-  const jzzUri = getUri(webview, extensionUri, [ 'web', 'JZZ.js' ])
-  const jzzTinyUri = getUri(webview, extensionUri, [ 'web', 'JZZ.synth.Tiny.js' ])
-
   return `<!DOCTYPE html>
   <html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="module" src="${toolkitUri}"></script>
-    <script type="module" src="${scamperUri}"></script>
-    <script src="${jzzUri}"></script>
-    <script src="${jzzTinyUri}"></script>
     ${commonStyleDecl}
     ${head}
-    ${scamper.emitSupportScript()}
   </head>
   <body>
     ${body}

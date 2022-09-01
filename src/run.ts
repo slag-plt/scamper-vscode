@@ -16,7 +16,7 @@ export function runProgramCommand(extensionUri: vscode.Uri) {
 				vscode.ViewColumn.Beside,
 				{ enableScripts: true })
 
-      let body = `<div class="scamper" id="program">${src}</div>`
+      let body = `<div class="scamper-output" id="program">${src}</div>`
 
 			panel.webview.html = webview.emitHTMLDocument(extensionUri, panel.webview, '', body)
 		}
