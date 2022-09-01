@@ -77,6 +77,14 @@ export function emitHTMLDocument (extensionUri: vscode.Uri, webview: vscode.Webv
     'index.js'
   ])
 
+  const scamperBundleUri = getUri(webview, extensionUri, [
+    'node_modules',
+    'scamper-lang',
+    'dist',
+    'web',
+    'bundle.js'
+  ])
+
   const jzzUri = getUri(webview, extensionUri, [ 'web', 'JZZ.js' ])
   const jzzTinyUri = getUri(webview, extensionUri, [ 'web', 'JZZ.synth.Tiny.js' ])
 
@@ -95,6 +103,10 @@ export function emitHTMLDocument (extensionUri: vscode.Uri, webview: vscode.Webv
   </head>
   <body>
     ${body}
+    <script src="${scamperBundleUri}"></script>
+    <script>
+      replaceCodeWidgets()
+    </script>
   </body>
   </html>`
 }

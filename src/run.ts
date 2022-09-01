@@ -8,7 +8,7 @@ export function runProgramCommand(extensionUri: vscode.Uri) {
 		if (src === undefined) {
 			vscode.window.showErrorMessage('No source code to run!')
 		} else {
-			const result = scamper.compileProgram(src)
+			// const result = scamper.compileProgram(src)
 
 			const panel = vscode.window.createWebviewPanel(
 				'scamper-exploration',
@@ -16,18 +16,7 @@ export function runProgramCommand(extensionUri: vscode.Uri) {
 				vscode.ViewColumn.Beside,
 				{ enableScripts: true })
 
-      let body = ''
-
-			if (result.tag === 'error') {
-        body = `Error(s) occurred during compilation:\n${scamper.errorToString(result)}`
-			} else { 
-        const state: scamper.ProgramState = new scamper.ProgramState(result.value).evaluate()
-        body = `<div id="program">${scamper.progToString(0, state.prog, false, true)}</div>
-				<script>
-					emitWidgets()
-				</script>
-				`
-      }
+      let body = `<div class="scamper" id="program">${src}</div>`
 
 			panel.webview.html = webview.emitHTMLDocument(extensionUri, panel.webview, '', body)
 		}
