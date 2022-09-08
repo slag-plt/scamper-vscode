@@ -2,13 +2,18 @@ import * as vscode from 'vscode'
 import * as scamper from 'scamper-lang'
 import * as webview from './webview'
 
+let currentPanel: vscode.WebviewPanel | undefined = undefined
+
 export function traceProgramCommand(extensionUri: vscode.Uri) {
 	return function() {
 		const src = vscode.window.activeTextEditor?.document.getText()
 		if (src === undefined) {
 			vscode.window.showErrorMessage('No source code to run!')
 		}
-		const panel = vscode.window.createWebviewPanel(
+		if (currentPanel !== undefined) {
+			currentPanel.dispose()
+		}
+		currentPanel = vscode.window.createWebviewPanel(
 			'scamper-exploration',
 			`Scamper: Program Explorer`,
 			vscode.ViewColumn.Beside,
@@ -34,6 +39,6 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 				</div>
 			</div>`
 
-			panel.webview.html = webview.emitHTMLDocument(extensionUri, panel.webview, '', body)
+			currentPanel.webview.html = webview.emitHTMLDocument(extensionUri, currentPanel.webview, '', body)
 	}
 }

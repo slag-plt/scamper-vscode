@@ -1,6 +1,16 @@
 import * as scamper from 'scamper-lang'
 import * as vscode from 'vscode'
 
+// HACK: '<?' turns into a comment. It looks like whenever we inject
+// code into a page to be picked up by Scamper, we need to escape
+// this sequence with appropriate HTML entities. Scamper does this
+// internally as it manipulates the DOM, but we also need to do this
+// whenever we initially inject a page with code. Need to figure out
+// why this happens and how to inject code in an appropriate fashion.
+// Maybe this means fully escaping all special HTML entities, not
+// just this combination?
+export const sanitize = (s: string): string => s.replace('<?', '&lt;?')
+
 const commonStyleDecl: string = `<style>
   body {
     color: var(--vscode-editor-foreground);
@@ -78,7 +88,7 @@ export function emitHTMLDocument (extensionUri: vscode.Uri, webview: vscode.Webv
     'bundle.js'
   ])
 
-  return `<!DOCTYPE html>
+  return sanitize(`<!DOCTYPE html>
   <html lang="en">
   <head>
     <meta charset="UTF-8">
@@ -94,5 +104,5 @@ export function emitHTMLDocument (extensionUri: vscode.Uri, webview: vscode.Webv
       replaceCodeWidgets()
     </script>
   </body>
-  </html>`
+  </html>`)
 }

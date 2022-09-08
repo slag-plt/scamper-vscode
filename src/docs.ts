@@ -4,12 +4,6 @@ import * as scamper from 'scamper-lang'
 
 import * as webview from './webview'
 
-// HACK: '<?' causes... something in HTML rendering to go south. '<?' translates
-// to a comment? Ugh, can't tell. But this replacement fixes it...
-function sanitizeNames(s:string): string {
-  return s.replace('<?', '&lt;?')
-}
-
 function libToHTML(lib: string): string {
   const env = lib === 'Prelude' ? scamper.preludeEnv : scamper.internalLibs.get(lib)!
   return `
@@ -22,7 +16,7 @@ function libToHTML(lib: string): string {
 
 function entryToHTML(name: string, entry: scamper.EnvEntry): string {
   return `
-    <vscode-button style="width: 100%;" appearance="secondary" class="binding">${sanitizeNames(name)}</vscode-button>
+    <vscode-button style="width: 100%;" appearance="secondary" class="binding">${webview.sanitize(name)}</vscode-button>
     <div style="display: none;" class="description">${entry.doc ? marked(entry.doc.docToMarkdown()) : '<em>No documentation available</em>'}</div> 
   `
 }
