@@ -18,6 +18,12 @@ const commonStyleDecl: string = `<style>
     font-size: var(--vscode-editor-font-size);
   }
 
+  .language-racket {
+    color: var(--vscode-editor-foreground);
+    font-family: var(--vscode-editor-font-family);
+    font-size: var(--vscode-editor-font-size);
+  }
+
   .scamper-output {
     margin-bottom: 2em;
   }
@@ -65,6 +71,7 @@ const commonStyleDecl: string = `<style>
     width: 100%;
     height: 10%;
   }
+
 </style>`
 
 export function getUri(webview: vscode.Webview, extensionUri: vscode.Uri, pathList: string[]) {

@@ -31,7 +31,7 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 					<span id="step" class="step-counter">Step</span>
 				</div>
 				<div id="display">
-					<div id="program" class="program">${src}</div>
+					<pre id="program" class="program language-racket">${src}</pre>
 					<form id="repl-form">
 						<vscode-text-area id="input" class="add-statement-input" placeholder="(+ 1 1)">Additional Statements</vscode-text-area>
 					</form>
