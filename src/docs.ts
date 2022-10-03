@@ -28,7 +28,6 @@ export class DocProvider implements vscode.WebviewViewProvider {
   constructor(public extensionUri: vscode.Uri) { }
 
   resolveWebviewView(webviewView: vscode.WebviewView, _context: vscode.WebviewViewResolveContext, _token: vscode.CancellationToken): void {
-    console.log('hi!')
     this.view = webviewView
     this.view.webview.options = {
 			enableScripts: true,

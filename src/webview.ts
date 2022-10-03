@@ -78,6 +78,21 @@ export function getUri(webview: vscode.Webview, extensionUri: vscode.Uri, pathLi
   return webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, ...pathList));
 }
 
+export function registerFSHandler(webview: vscode.Webview) {
+  webview.onDidReceiveMessage(async (message) => {
+    if (message.command === 'fs-read') {
+      if (vscode.workspace.workspaceFolders === undefined) {
+        webview.postMessage({ command: 'fs-read-result', data: undefined })
+      } else {
+        // N.B., for now only support _one_ workspace folder!
+        const path = vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, message.data)
+        const text = await vscode.workspace.openTextDocument(path).then(doc => doc.getText(), _ => undefined)
+        webview.postMessage({ command: 'fs-read-result', data: text })
+      }
+    }
+  })
+}
+
 export function emitHTMLDocument (extensionUri: vscode.Uri, webview: vscode.Webview, head: string, body: string) {
   const toolkitUri = getUri(webview, extensionUri, [
     "node_modules",
@@ -108,7 +123,37 @@ export function emitHTMLDocument (extensionUri: vscode.Uri, webview: vscode.Webv
     ${body}
     <script src="${scamperBundleUri}"></script>
     <script>
-      replaceCodeWidgets()
+      (function() {
+        const vscode = acquireVsCodeApi()
+
+        class Provider {
+          read(path) {
+            return new Promise((resolve, reject) => {
+              vscode.postMessage({
+                command: 'fs-read',
+                data: path
+              })
+              window.addEventListener('message', event => {
+                const message = event.data
+                if (message.command === 'fs-read-result') {
+                  if (message.data !== undefined) {
+                    resolve(ok(message.data))
+                  } else {
+                    reject()
+                  }
+                }
+              })
+            })
+          }
+
+          write(path, data) {
+            throw new Error('Not implemented!')
+          }
+        }
+
+        registerFs('', new Provider())
+        replaceCodeWidgets()
+      })()
     </script>
   </body>
   </html>`)
