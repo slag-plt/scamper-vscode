@@ -105,7 +105,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\b(?i:case|ecase|ccase|typecase|etypecase|ctypecase|do|dolist|dotimes|let|let\*|labels|flet|loop|if|else|when|unless)\b</string>
+			<string>\b(?i:begin|case|ecase|ccase|typecase|etypecase|ctypecase|do|dolist|dotimes|let|let\*|labels|flet|loop|match|test-case|if|else|when|unless)\b</string>
 			<key>name</key>
 			<string>keyword.control.lisp</string>
 		</dict>
