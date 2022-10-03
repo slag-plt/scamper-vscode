@@ -13,11 +13,14 @@ export function runProgramCommand(extensionUri: vscode.Uri) {
 			if (currentPanel !== undefined) {
 				currentPanel.dispose()
 			}
+
 			currentPanel = vscode.window.createWebviewPanel(
 				'scamper-exploration',
 				`Scamper: Output`,
 				vscode.ViewColumn.Beside,
 				{ enableScripts: true })
+
+			webview.registerFSHandler(currentPanel.webview)
 
       let body = `<pre class="scamper-output language-racket">${src}</pre>`
 			currentPanel.webview.html = webview.emitHTMLDocument(extensionUri, currentPanel.webview, '', body)
