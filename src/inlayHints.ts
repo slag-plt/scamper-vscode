@@ -1,6 +1,7 @@
 import * as vscode from 'vscode'
 import * as scamper from 'scamper-lang'
 import { radioGroupTemplate } from '@microsoft/fast-foundation'
+import { echar, Exp, Stmt } from 'scamper-lang/dist/lang'
 
 /**
  * These functions are really riding on the users coding method
@@ -146,6 +147,7 @@ function getExpected (str: string, index: number, operation: string): lenStr {
     return out
   }
 }
+
 /**
  * for defines I want to get all defined functions index get their names and save their parameters if they have any
  * then where ever the function gets called I want to show the parameters
@@ -157,119 +159,163 @@ export class mkInlayHints implements vscode.InlayHintsProvider<vscode.InlayHint>
   provideInlayHints(document: vscode.TextDocument, _range: vscode.Range, _token: vscode.CancellationToken): vscode.ProviderResult<vscode.InlayHint[]> {
     const src = document.getText()
     const pos = document.positionAt(src.indexOf("define")-1)
+    const output: vscode.ProviderResult<vscode.InlayHint[]> = []
 
     const program = scamper.compileProgram(src)
     const prog = program.tag === 'ok' ? program.value : null
-    const resultProg = new scamper.ProgramState(prog!).evaluate()
-    const hold = new scamper.ProgramTrace(resultProg)
-
-    // prog?.statements.forEach((statement, index) => {
-    //   switch (statement.tag) {
-    //     case 'define':{}
-    //     case 'import': {}
-    //     case 'struct': {}
-    //     case 'testcase': {}
-    //     case 'exp': {}
-    //     case ''
-    //   }
-    // })
+    const  resultProg = new scamper.ProgramState(prog!).evaluate()
+    // const resultTrace = resultProg.then((x) => { new scamper.ProgramTrace(x)})
+    // async function getInlayHints() {
+    // const hold = new scamper.ProgramTrace(resultProg)
+    //what happened to testcase
+    prog?.statements.forEach((statement, index) => {
+      switch (statement.tag) {
+        case 'define':{
+          break
+        }
+        case 'import': {
+          break
+        }
+        case 'struct': {
+          break
+        }
+        case 'exp': {
+          // let holdState: Exp| null
+          // let str = "here"
+          // const hProg = resultProg.then((x)=>{
+            
+          //   x.
+          //   //can't seem to get the evaluated value out
+          
+          // })
+          const posH = index
+          const label = [new vscode.InlayHintLabelPart(scamper.expToString(0, statement.value, false))]
+          const hint = new vscode.InlayHint(document.positionAt(posH), label)
+          output.push(hint)
+          // why cant i get the right expToString function
+          break
+        }
+        case 'imported': {
+          break
+        }
+        case 'error': {
+          break
+        }
+        case 'binding': {
+          break
+        }
+        case 'value': {
+          // pos is just indexed not the position if the expression or it is a column value
+          
+          const pos = index
+          const label = [new vscode.InlayHintLabelPart(scamper.expToString(0, statement.value, false))]
+          const hint = new vscode.InlayHint(document.positionAt(pos), label)
+          output.push(hint)
+          
+          break
+        }
+        case 'testcase': {
+          break
+        }
+      }
+    })
 
     const defineHint = [new vscode.InlayHintLabelPart('function definition: ')]
     //binary operations
-    const output: vscode.ProviderResult<vscode.InlayHint[]> = []
-    const holdAdd = getAllIndexOf(src, "+")
-    holdAdd.forEach((element) => {
-      const expected = getExpected(src, element, "+")
-      const poshold = document.positionAt(element + expected.len!)
-      const hold = [new vscode.InlayHintLabelPart(expected.str)]
-      const hint = new vscode.InlayHint(poshold, hold)
-      output.push(hint)
-    })
+   
+    // const holdAdd = getAllIndexOf(src, "+")
+    // holdAdd.forEach((element) => {
+    //   const expected = getExpected(src, element, "+")
+    //   const poshold = document.positionAt(element + expected.len!)
+    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
+    //   const hint = new vscode.InlayHint(poshold, hold)
+    //   output.push(hint)
+    // })
 
-    const holdMinus = getAllIndexOf(src, "-")
-    holdMinus.forEach((element) => {
-      const expected = getExpected(src, element, "-")
-      const poshold = document.positionAt(element + expected.len!)
-      const hold = [new vscode.InlayHintLabelPart(expected.str)]
-      const hint = new vscode.InlayHint(poshold, hold)
-      output.push(hint)
-    })
+    // const holdMinus = getAllIndexOf(src, "-")
+    // holdMinus.forEach((element) => {
+    //   const expected = getExpected(src, element, "-")
+    //   const poshold = document.positionAt(element + expected.len!)
+    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
+    //   const hint = new vscode.InlayHint(poshold, hold)
+    //   output.push(hint)
+    // })
 
-    const holdTimes = getAllIndexOf(src, "*")
-    holdTimes.forEach((element) => {
-      const expected = getExpected(src, element, "*")
-      const poshold = document.positionAt(element + expected.len!)
-      const hold = [new vscode.InlayHintLabelPart(expected.str)]
-      const hint = new vscode.InlayHint(poshold, hold)
-      output.push(hint)
-    })
+    // const holdTimes = getAllIndexOf(src, "*")
+    // holdTimes.forEach((element) => {
+    //   const expected = getExpected(src, element, "*")
+    //   const poshold = document.positionAt(element + expected.len!)
+    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
+    //   const hint = new vscode.InlayHint(poshold, hold)
+    //   output.push(hint)
+    // })
 
-    const holdDiv = getAllIndexOf(src, "/")
-    holdDiv.forEach((element) => {
-      const expected = getExpected(src, element, "/")
-      const poshold = document.positionAt(element + expected.len!)
-      const hold = [new vscode.InlayHintLabelPart(expected.str)]
-      const hint = new vscode.InlayHint(poshold, hold)
-      output.push(hint)
-    })
+    // const holdDiv = getAllIndexOf(src, "/")
+    // holdDiv.forEach((element) => {
+    //   const expected = getExpected(src, element, "/")
+    //   const poshold = document.positionAt(element + expected.len!)
+    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
+    //   const hint = new vscode.InlayHint(poshold, hold)
+    //   output.push(hint)
+    // })
 
-    const holdMod = getAllIndexOf(src, "modulo")
-    holdMod.forEach((element) => {
-      const expected = getExpected(src, element, "modulo")
-      const poshold = document.positionAt(element + expected.len!)
-      const hold = [new vscode.InlayHintLabelPart(expected.str)]
-      const hint = new vscode.InlayHint(poshold, hold)
-      output.push(hint)
-    })
+    // const holdMod = getAllIndexOf(src, "modulo")
+    // holdMod.forEach((element) => {
+    //   const expected = getExpected(src, element, "modulo")
+    //   const poshold = document.positionAt(element + expected.len!)
+    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
+    //   const hint = new vscode.InlayHint(poshold, hold)
+    //   output.push(hint)
+    // })
 
-    const holdLess = getAllIndexOf(src, "<")
-    holdLess.forEach((element) => {
-      const expected = getExpected(src, element, "<")
-      const poshold = document.positionAt(element + expected.len!)
-      const hold = [new vscode.InlayHintLabelPart(expected.str)]
-      const hint = new vscode.InlayHint(poshold, hold)
-      output.push(hint)
-    })
+    // const holdLess = getAllIndexOf(src, "<")
+    // holdLess.forEach((element) => {
+    //   const expected = getExpected(src, element, "<")
+    //   const poshold = document.positionAt(element + expected.len!)
+    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
+    //   const hint = new vscode.InlayHint(poshold, hold)
+    //   output.push(hint)
+    // })
 
-    const holdGr = getAllIndexOf(src, ">")
-    holdGr.forEach((element) => {
-      const expected = getExpected(src, element, ">")
-      const poshold = document.positionAt(element + expected.len!)
-      const hold = [new vscode.InlayHintLabelPart(expected.str)]
-      const hint = new vscode.InlayHint(poshold, hold)
-      output.push(hint)
-    })
+    // const holdGr = getAllIndexOf(src, ">")
+    // holdGr.forEach((element) => {
+    //   const expected = getExpected(src, element, ">")
+    //   const poshold = document.positionAt(element + expected.len!)
+    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
+    //   const hint = new vscode.InlayHint(poshold, hold)
+    //   output.push(hint)
+    // })
 
-    const holdLessEq = getAllIndexOf(src, "<=")
-    holdLessEq.forEach((element) => {
-      const expected = getExpected(src, element, "<=")
-      const poshold = document.positionAt(element + expected.len!)
-      const hold = [new vscode.InlayHintLabelPart(expected.str)]
-      const hint = new vscode.InlayHint(poshold, hold)
-      output.push(hint)
-    })
+    // const holdLessEq = getAllIndexOf(src, "<=")
+    // holdLessEq.forEach((element) => {
+    //   const expected = getExpected(src, element, "<=")
+    //   const poshold = document.positionAt(element + expected.len!)
+    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
+    //   const hint = new vscode.InlayHint(poshold, hold)
+    //   output.push(hint)
+    // })
     
-    const holdGrEq = getAllIndexOf(src, ">=")
-    holdGrEq.forEach((element) => {
-      const expected = getExpected(src, element, ">=")
-      const poshold = document.positionAt(element + expected.len!)
-      const hold = [new vscode.InlayHintLabelPart(expected.str)]
-      const hint = new vscode.InlayHint(poshold, hold)
-      output.push(hint)
-    })
+    // const holdGrEq = getAllIndexOf(src, ">=")
+    // holdGrEq.forEach((element) => {
+    //   const expected = getExpected(src, element, ">=")
+    //   const poshold = document.positionAt(element + expected.len!)
+    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
+    //   const hint = new vscode.InlayHint(poshold, hold)
+    //   output.push(hint)
+    // })
     
-    const holdNot = getAllIndexOf(src, "not")
-    holdNot.forEach((element) => {
-      const expected = getExpectedBool(src, element, "not")
-      const poshold = document.positionAt(element + expected.len!)
-      const hold = [new vscode.InlayHintLabelPart(expected.str)]
-      const hint = new vscode.InlayHint(poshold, hold)
-      hint.paddingRight = true
-      output.push(hint)
-    })
+    // const holdNot = getAllIndexOf(src, "not")
+    // holdNot.forEach((element) => {
+    //   const expected = getExpectedBool(src, element, "not")
+    //   const poshold = document.positionAt(element + expected.len!)
+    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
+    //   const hint = new vscode.InlayHint(poshold, hold)
+    //   hint.paddingRight = true
+    //   output.push(hint)
+    // })
 
 
-    output.push(new vscode.InlayHint(pos, defineHint))
+    // output.push(new vscode.InlayHint(pos, defineHint))
     return output
   }
   // return function(event: vscode.TextDocumentChangeEvent){
