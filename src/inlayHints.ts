@@ -168,7 +168,7 @@ export class mkInlayHints implements vscode.InlayHintsProvider<vscode.InlayHint>
     // async function getInlayHints() {
     // const hold = new scamper.ProgramTrace(resultProg)
     //what happened to testcase
-    prog?.statements.forEach((statement, index) => {
+    prog?.statements.forEach((statement) => {
       switch (statement.tag) {
         case 'define':{
           break
@@ -180,16 +180,18 @@ export class mkInlayHints implements vscode.InlayHintsProvider<vscode.InlayHint>
           break
         }
         case 'exp': {
+          // resultProg.
           // let holdState: Exp| null
           // let str = "here"
           // const hProg = resultProg.then((x)=>{
             
-          //   x.
+          //   x
           //   //can't seem to get the evaluated value out
           
           // })
-          const posH = index
-          const label = [new vscode.InlayHintLabelPart(scamper.expToString(0, statement.value, false))]
+          const expStr = scamper.expToString(0, statement.value, false)
+          const posH = src.indexOf(expStr) + expStr.length
+          const label = [new vscode.InlayHintLabelPart(expStr)]
           const hint = new vscode.InlayHint(document.positionAt(posH), label)
           output.push(hint)
           // why cant i get the right expToString function
@@ -206,9 +208,11 @@ export class mkInlayHints implements vscode.InlayHintsProvider<vscode.InlayHint>
         }
         case 'value': {
           // pos is just indexed not the position if the expression or it is a column value
-          
-          const pos = index
-          const label = [new vscode.InlayHintLabelPart(scamper.expToString(0, statement.value, false))]
+          const expStr = scamper.expToString(0, statement.value, false)
+          const pos = src.indexOf(expStr) + expStr.length
+          const label = [new vscode.InlayHintLabelPart(expStr)]
+          // const pos = index
+          // const label = [new vscode.InlayHintLabelPart(scamper.expToString(0, statement.value, false))]
           const hint = new vscode.InlayHint(document.positionAt(pos), label)
           output.push(hint)
           
