@@ -183,13 +183,17 @@ export class mkInlayHints implements vscode.InlayHintsProvider<vscode.InlayHint>
           // resultProg.
           // let holdState: Exp| null
           // let str = "here"
+
           // const hProg = resultProg.then((x)=>{
+          //   const trace = new scamper.ProgramTrace(x)
+          //   x.stepExp(statement.value).then((val)=>{
+          //     val.tag === 'ok' ? str = scamper.expToString(0, val.value, false) : null
+          //   })
             
-          //   x
           //   //can't seem to get the evaluated value out
           
           // })
-          const expStr = scamper.expToString(0, statement.value, false)
+          const expStr =  scamper.expToString(0, statement.value, false)
           const posH = src.indexOf(expStr) + expStr.length
           const label = [new vscode.InlayHintLabelPart(expStr)]
           const hint = new vscode.InlayHint(document.positionAt(posH), label)
