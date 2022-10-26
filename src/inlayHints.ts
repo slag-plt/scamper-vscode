@@ -148,6 +148,118 @@ function getExpected (str: string, index: number, operation: string): lenStr {
   }
 }
 
+
+
+async function getEvaluated(src: string, document: vscode.TextDocument): Promise<vscode.InlayHint[]>{
+  const output: vscode.ProviderResult<vscode.InlayHint[]> = []
+  const program = scamper.compileProgram(src)
+  const prog = program.tag === 'ok' ? program.value : null
+  const  resultProg =  new scamper.ProgramState(prog!).evaluate()
+  let evaluated: Stmt[]
+  const t = await resultProg.then((x) => {
+    if (x.isFullyEvaluated()){
+      evaluated = x.prog.statements
+    }
+    
+  })
+
+  prog?.statements.forEach((statement, index) => {
+    let holdState = evaluated[index] //this is the statement that is being evaluated
+    
+    switch (statement.tag) {
+      case 'define':{
+        // what effects are this
+        switch (holdState.tag) {
+          case 'define':{
+            break
+          }
+          default: {
+            break
+          }
+        }
+        break
+      }
+      case 'import': {
+        switch (holdState.tag) {
+          case 'import':{
+            break}
+          default: {
+            break
+          }
+        }
+        break
+      }
+      case 'struct': {
+        switch (holdState.tag) {
+          case 'struct':{
+            break}
+          default: {
+            break
+          }
+        }
+        break
+      }
+      case 'exp': {
+        switch (holdState.tag) {
+          case 'value':{
+            const pos = statement.value.range.end
+            const position = new vscode.Position(pos.line, pos.column+1)//deal with offset in column
+            const expStr =  scamper.expToString(0, holdState.value, false)+" evaluated" 
+            const l = scamper.expToString(0, statement.value, false)// still need deal with position properly using the range information
+            const posH = src.indexOf(l) + l.length
+            const label = [new vscode.InlayHintLabelPart(expStr)]
+            const hint = new vscode.InlayHint(position, label)
+            output.push(hint)
+            break
+          }
+          case 'imported':{
+            // holdState.source
+            break
+          }
+          case 'testresult':{
+            // holdState.actual
+            // holdState.desc
+            // holdState.expected
+            // holdState.passed
+            // holdState.reason
+            // // holdState.actual look here well
+            break
+          }
+          case 'binding':{
+            // holdState.
+            break
+          }
+          case 'error':{
+            holdState.errors
+            break
+          }
+          default: {
+            const expStr =  scamper.expToString(0, statement.value, false)
+            const posH = src.indexOf(expStr) + expStr.length
+            const label = [new vscode.InlayHintLabelPart(expStr)]
+            const hint = new vscode.InlayHint(document.positionAt(posH), label)
+            output.push(hint)
+            // why cant i get the right expToString function
+            break
+          }
+        }
+        break
+      }
+      case 'testcase': {
+        switch (holdState.tag) {
+          case 'testcase':{
+            break}
+          default: {
+            break
+          }
+        }
+        break
+      }
+    }
+    
+  })
+  return output
+}
 /**
  * for defines I want to get all defined functions index get their names and save their parameters if they have any
  * then where ever the function gets called I want to show the parameters
@@ -159,74 +271,139 @@ export class mkInlayHints implements vscode.InlayHintsProvider<vscode.InlayHint>
   provideInlayHints(document: vscode.TextDocument, _range: vscode.Range, _token: vscode.CancellationToken): vscode.ProviderResult<vscode.InlayHint[]> {
     const src = document.getText()
     const pos = document.positionAt(src.indexOf("define")-1)
-    const output: vscode.ProviderResult<vscode.InlayHint[]> = []
+    const output: vscode.ProviderResult<vscode.InlayHint[]> = getEvaluated(src, document) //this is the evaluated program
 
-    const program = scamper.compileProgram(src)
-    const prog = program.tag === 'ok' ? program.value : null
-    const  resultProg = new scamper.ProgramState(prog!).evaluate()
+    // const program = scamper.compileProgram(src)
+    // const prog = program.tag === 'ok' ? program.value : null
+    // const  resultProg =  new scamper.ProgramState(prog!).evaluate()
+    // let evaluated = prog?.statements
+    // const t =  resultProg.then((x) => {
+    //   if (x.isFullyEvaluated()){
+    //     evaluated = x.prog.statements
+    //   }
+      
+    // })
     // const resultTrace = resultProg.then((x) => { new scamper.ProgramTrace(x)})
     // async function getInlayHints() {
     // const hold = new scamper.ProgramTrace(resultProg)
     //what happened to testcase
-    prog?.statements.forEach((statement) => {
-      switch (statement.tag) {
-        case 'define':{
-          break
-        }
-        case 'import': {
-          break
-        }
-        case 'struct': {
-          break
-        }
-        case 'exp': {
-          // resultProg.
-          // let holdState: Exp| null
-          // let str = "here"
-
-          // const hProg = resultProg.then((x)=>{
-          //   const trace = new scamper.ProgramTrace(x)
-          //   x.stepExp(statement.value).then((val)=>{
-          //     val.tag === 'ok' ? str = scamper.expToString(0, val.value, false) : null
-          //   })
-            
-          //   //can't seem to get the evaluated value out
+    // prog?.statements.forEach((statement, index) => {
+    //   let holdState = evaluated == undefined? statement: evaluated[index] //this is the statement that is being evaluated
+      
+    //   switch (statement.tag) {
+    //     case 'define':{
+    //       switch (holdState.tag) {
+    //         case 'define':{
+    //           break}
+    //         default: {
+    //           break
+    //         }
+    //       }
+    //       break
+    //     }
+    //     case 'import': {
+    //       switch (holdState.tag) {
+    //         case 'import':{
+    //           break}
+    //         default: {
+    //           break
+    //         }
+    //       }
+    //       break
+    //     }
+    //     case 'struct': {
+    //       switch (holdState.tag) {
+    //         case 'struct':{
+    //           break}
+    //         default: {
+    //           break
+    //         }
+    //       }
+    //       break
+    //     }
+    //     case 'exp': {
+    //       switch (holdState.tag) {
+    //         case 'exp':{
+    //           const expStr =  scamper.expToString(0, holdState.value, false)+" evaluated"
+    //           const l = scamper.expToString(0, statement.value, false)
+    //           const posH = src.indexOf(l) + l.length
+    //           const label = [new vscode.InlayHintLabelPart(expStr)]
+    //           const hint = new vscode.InlayHint(document.positionAt(posH), label)
+    //           output.push(hint)
+    //           break}
+    //         default: {
+    //           const expStr =  scamper.expToString(0, statement.value, false)
+    //           const posH = src.indexOf(expStr) + expStr.length
+    //           const label = [new vscode.InlayHintLabelPart(expStr)]
+    //           const hint = new vscode.InlayHint(document.positionAt(posH), label)
+    //           output.push(hint)
+    //           // why cant i get the right expToString function
+    //           break
+    //         }
+    //       }
+    //       break
+    //     }
+    //     case 'imported': {
+    //       switch (holdState.tag) {
+    //         case 'imported':{
+    //           break}
+    //         default: {
+    //           break
+    //         }
+    //       }
+    //       break
+    //     }
+    //     case 'error': {
+    //       switch (holdState.tag) {
+    //         case 'error':{
+    //           break}
+    //         default: {
+    //           break
+    //         }
+    //       }
+    //       break
+    //     }
+    //     case 'binding': {
+    //       switch (holdState.tag) {
+    //         case 'binding':{
+    //           break}
+    //         default: {
+    //           break
+    //         }
+    //       }
+    //       break
+    //     }
+    //     case 'value': {
+    //       switch (holdState.tag) {
+    //         case 'value':{
+    //           break}
+    //         default: {
+    //           break
+    //         }
+    //       }
+    //       // pos is just indexed not the position if the expression or it is a column value
+    //       const expStr = scamper.expToString(0, statement.value, false)
+    //       const pos = src.indexOf(expStr) + expStr.length
+    //       const label = [new vscode.InlayHintLabelPart(expStr)]
+    //       // const pos = index
+    //       // const label = [new vscode.InlayHintLabelPart(scamper.expToString(0, statement.value, false))]
+    //       const hint = new vscode.InlayHint(document.positionAt(pos), label)
+    //       output.push(hint)
           
-          // })
-          const expStr =  scamper.expToString(0, statement.value, false)
-          const posH = src.indexOf(expStr) + expStr.length
-          const label = [new vscode.InlayHintLabelPart(expStr)]
-          const hint = new vscode.InlayHint(document.positionAt(posH), label)
-          output.push(hint)
-          // why cant i get the right expToString function
-          break
-        }
-        case 'imported': {
-          break
-        }
-        case 'error': {
-          break
-        }
-        case 'binding': {
-          break
-        }
-        case 'value': {
-          // pos is just indexed not the position if the expression or it is a column value
-          const expStr = scamper.expToString(0, statement.value, false)
-          const pos = src.indexOf(expStr) + expStr.length
-          const label = [new vscode.InlayHintLabelPart(expStr)]
-          // const pos = index
-          // const label = [new vscode.InlayHintLabelPart(scamper.expToString(0, statement.value, false))]
-          const hint = new vscode.InlayHint(document.positionAt(pos), label)
-          output.push(hint)
-          
-          break
-        }
-        case 'testcase': {
-          break
-        }
-      }
-    })
+    //       break
+    //     }
+    //     case 'testcase': {
+    //       switch (holdState.tag) {
+    //         case 'testcase':{
+    //           break}
+    //         default: {
+    //           break
+    //         }
+    //       }
+    //       break
+    //     }
+    //   }
+    // })
 
     const defineHint = [new vscode.InlayHintLabelPart('function definition: ')]
     //binary operations
