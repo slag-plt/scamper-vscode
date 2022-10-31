@@ -167,10 +167,19 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
     let holdState = evaluated[index] //this is the statement that is being evaluated
     
     switch (statement.tag) {
-      case 'define':{
-        // what effects are this
+      case 'define': {
         switch (holdState.tag) {
-          case 'define':{
+          case "error": {
+            const error = ""
+            const errors = holdState.errors
+            let position: vscode.Position
+            holdState.errors.forEach((err, i) => {
+              error + scamper.detailsToMsgString(err)
+              if (i == errors.length-1){
+                //deal with position
+                // position = new vscode.Position(errors[i].range?.end.line, errors[i].range?.end.column)
+              }
+            })
             break
           }
           default: {
@@ -181,8 +190,19 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
       }
       case 'import': {
         switch (holdState.tag) {
-          case 'import':{
-            break}
+          case "error": {
+            const error = ""
+            const errors = holdState.errors
+            let position: vscode.Position
+            holdState.errors.forEach((err, i) => {
+              error + scamper.detailsToMsgString(err)
+              if (i == errors.length-1){
+                //deal with position
+                // position = new vscode.Position(errors[i].range?.end.line, errors[i].range?.end.column)
+              }
+            })
+            break
+          }
           default: {
             break
           }
@@ -191,8 +211,19 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
       }
       case 'struct': {
         switch (holdState.tag) {
-          case 'struct':{
-            break}
+          case "error": {
+            const error = ""
+            const errors = holdState.errors
+            let position: vscode.Position
+            holdState.errors.forEach((err, i) => {
+              error + scamper.detailsToMsgString(err)
+              if (i == errors.length-1){
+                //deal with position
+                // position = new vscode.Position(errors[i].range?.end.line, errors[i].range?.end.column)
+              }
+            })
+            break
+          }
           default: {
             break
           }
@@ -203,43 +234,34 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
         switch (holdState.tag) {
           case 'value':{
             const pos = statement.value.range.end
-            const position = new vscode.Position(pos.line, pos.column+1)//deal with offset in column
-            const expStr =  scamper.expToString(0, holdState.value, false)+" evaluated" 
-            const l = scamper.expToString(0, statement.value, false)// still need deal with position properly using the range information
-            const posH = src.indexOf(l) + l.length
-            const label = [new vscode.InlayHintLabelPart(expStr)]
+            //using the unevaluated expression to get the position
+            const column = pos.column >= scamper.expToString(0, statement.value, false).length? pos.column: scamper.expToString(0, statement.value, false).length
+            const position = new vscode.Position(pos.line, column)//deal with offset in column
+            const expStr =  scamper.expToString(0, holdState.value, false)
+            const label = [new vscode.InlayHintLabelPart(" : "+  expStr)]
             const hint = new vscode.InlayHint(position, label)
             output.push(hint)
             break
           }
-          case 'imported':{
-            // holdState.source
-            break
-          }
-          case 'testresult':{
-            // holdState.actual
-            // holdState.desc
-            // holdState.expected
-            // holdState.passed
-            // holdState.reason
-            // // holdState.actual look here well
-            break
-          }
-          case 'binding':{
-            // holdState.
-            break
-          }
-          case 'error':{
-            holdState.errors
+          case "error": {
+            const error = ""
+            const errors = holdState.errors
+            let position: vscode.Position
+            holdState.errors.forEach((err, i) => {
+              error + scamper.detailsToMsgString(err)
+              if (i == errors.length-1){
+                //deal with position
+                // position = new vscode.Position(errors[i].range?.end.line, errors[i].range?.end.column)
+              }
+            })
             break
           }
           default: {
             const expStr =  scamper.expToString(0, statement.value, false)
             const posH = src.indexOf(expStr) + expStr.length
-            const label = [new vscode.InlayHintLabelPart(expStr)]
+            const label = [new vscode.InlayHintLabelPart("exp not evaluated "+expStr)]
             const hint = new vscode.InlayHint(document.positionAt(posH), label)
             output.push(hint)
-            // why cant i get the right expToString function
             break
           }
         }
@@ -247,8 +269,15 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
       }
       case 'testcase': {
         switch (holdState.tag) {
-          case 'testcase':{
-            break}
+          case 'testresult':{
+            const pos = statement.actual.range.end
+            const position = new vscode.Position(pos.line, pos.column)
+            const bool = holdState.passed? "True" : "False"
+            const label = [new vscode.InlayHintLabelPart(bool)]
+            const hint = new vscode.InlayHint(position, label)
+            output.push(hint)
+            break
+          }
           default: {
             break
           }
@@ -256,7 +285,6 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
         break
       }
     }
-    
   })
   return output
 }
@@ -273,245 +301,7 @@ export class mkInlayHints implements vscode.InlayHintsProvider<vscode.InlayHint>
     const pos = document.positionAt(src.indexOf("define")-1)
     const output: vscode.ProviderResult<vscode.InlayHint[]> = getEvaluated(src, document) //this is the evaluated program
 
-    // const program = scamper.compileProgram(src)
-    // const prog = program.tag === 'ok' ? program.value : null
-    // const  resultProg =  new scamper.ProgramState(prog!).evaluate()
-    // let evaluated = prog?.statements
-    // const t =  resultProg.then((x) => {
-    //   if (x.isFullyEvaluated()){
-    //     evaluated = x.prog.statements
-    //   }
-      
-    // })
-    // const resultTrace = resultProg.then((x) => { new scamper.ProgramTrace(x)})
-    // async function getInlayHints() {
-    // const hold = new scamper.ProgramTrace(resultProg)
-    //what happened to testcase
-    // prog?.statements.forEach((statement, index) => {
-    //   let holdState = evaluated == undefined? statement: evaluated[index] //this is the statement that is being evaluated
-      
-    //   switch (statement.tag) {
-    //     case 'define':{
-    //       switch (holdState.tag) {
-    //         case 'define':{
-    //           break}
-    //         default: {
-    //           break
-    //         }
-    //       }
-    //       break
-    //     }
-    //     case 'import': {
-    //       switch (holdState.tag) {
-    //         case 'import':{
-    //           break}
-    //         default: {
-    //           break
-    //         }
-    //       }
-    //       break
-    //     }
-    //     case 'struct': {
-    //       switch (holdState.tag) {
-    //         case 'struct':{
-    //           break}
-    //         default: {
-    //           break
-    //         }
-    //       }
-    //       break
-    //     }
-    //     case 'exp': {
-    //       switch (holdState.tag) {
-    //         case 'exp':{
-    //           const expStr =  scamper.expToString(0, holdState.value, false)+" evaluated"
-    //           const l = scamper.expToString(0, statement.value, false)
-    //           const posH = src.indexOf(l) + l.length
-    //           const label = [new vscode.InlayHintLabelPart(expStr)]
-    //           const hint = new vscode.InlayHint(document.positionAt(posH), label)
-    //           output.push(hint)
-    //           break}
-    //         default: {
-    //           const expStr =  scamper.expToString(0, statement.value, false)
-    //           const posH = src.indexOf(expStr) + expStr.length
-    //           const label = [new vscode.InlayHintLabelPart(expStr)]
-    //           const hint = new vscode.InlayHint(document.positionAt(posH), label)
-    //           output.push(hint)
-    //           // why cant i get the right expToString function
-    //           break
-    //         }
-    //       }
-    //       break
-    //     }
-    //     case 'imported': {
-    //       switch (holdState.tag) {
-    //         case 'imported':{
-    //           break}
-    //         default: {
-    //           break
-    //         }
-    //       }
-    //       break
-    //     }
-    //     case 'error': {
-    //       switch (holdState.tag) {
-    //         case 'error':{
-    //           break}
-    //         default: {
-    //           break
-    //         }
-    //       }
-    //       break
-    //     }
-    //     case 'binding': {
-    //       switch (holdState.tag) {
-    //         case 'binding':{
-    //           break}
-    //         default: {
-    //           break
-    //         }
-    //       }
-    //       break
-    //     }
-    //     case 'value': {
-    //       switch (holdState.tag) {
-    //         case 'value':{
-    //           break}
-    //         default: {
-    //           break
-    //         }
-    //       }
-    //       // pos is just indexed not the position if the expression or it is a column value
-    //       const expStr = scamper.expToString(0, statement.value, false)
-    //       const pos = src.indexOf(expStr) + expStr.length
-    //       const label = [new vscode.InlayHintLabelPart(expStr)]
-    //       // const pos = index
-    //       // const label = [new vscode.InlayHintLabelPart(scamper.expToString(0, statement.value, false))]
-    //       const hint = new vscode.InlayHint(document.positionAt(pos), label)
-    //       output.push(hint)
-          
-    //       break
-    //     }
-    //     case 'testcase': {
-    //       switch (holdState.tag) {
-    //         case 'testcase':{
-    //           break}
-    //         default: {
-    //           break
-    //         }
-    //       }
-    //       break
-    //     }
-    //   }
-    // })
-
-    const defineHint = [new vscode.InlayHintLabelPart('function definition: ')]
-    //binary operations
-   
-    // const holdAdd = getAllIndexOf(src, "+")
-    // holdAdd.forEach((element) => {
-    //   const expected = getExpected(src, element, "+")
-    //   const poshold = document.positionAt(element + expected.len!)
-    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
-    //   const hint = new vscode.InlayHint(poshold, hold)
-    //   output.push(hint)
-    // })
-
-    // const holdMinus = getAllIndexOf(src, "-")
-    // holdMinus.forEach((element) => {
-    //   const expected = getExpected(src, element, "-")
-    //   const poshold = document.positionAt(element + expected.len!)
-    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
-    //   const hint = new vscode.InlayHint(poshold, hold)
-    //   output.push(hint)
-    // })
-
-    // const holdTimes = getAllIndexOf(src, "*")
-    // holdTimes.forEach((element) => {
-    //   const expected = getExpected(src, element, "*")
-    //   const poshold = document.positionAt(element + expected.len!)
-    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
-    //   const hint = new vscode.InlayHint(poshold, hold)
-    //   output.push(hint)
-    // })
-
-    // const holdDiv = getAllIndexOf(src, "/")
-    // holdDiv.forEach((element) => {
-    //   const expected = getExpected(src, element, "/")
-    //   const poshold = document.positionAt(element + expected.len!)
-    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
-    //   const hint = new vscode.InlayHint(poshold, hold)
-    //   output.push(hint)
-    // })
-
-    // const holdMod = getAllIndexOf(src, "modulo")
-    // holdMod.forEach((element) => {
-    //   const expected = getExpected(src, element, "modulo")
-    //   const poshold = document.positionAt(element + expected.len!)
-    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
-    //   const hint = new vscode.InlayHint(poshold, hold)
-    //   output.push(hint)
-    // })
-
-    // const holdLess = getAllIndexOf(src, "<")
-    // holdLess.forEach((element) => {
-    //   const expected = getExpected(src, element, "<")
-    //   const poshold = document.positionAt(element + expected.len!)
-    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
-    //   const hint = new vscode.InlayHint(poshold, hold)
-    //   output.push(hint)
-    // })
-
-    // const holdGr = getAllIndexOf(src, ">")
-    // holdGr.forEach((element) => {
-    //   const expected = getExpected(src, element, ">")
-    //   const poshold = document.positionAt(element + expected.len!)
-    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
-    //   const hint = new vscode.InlayHint(poshold, hold)
-    //   output.push(hint)
-    // })
-
-    // const holdLessEq = getAllIndexOf(src, "<=")
-    // holdLessEq.forEach((element) => {
-    //   const expected = getExpected(src, element, "<=")
-    //   const poshold = document.positionAt(element + expected.len!)
-    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
-    //   const hint = new vscode.InlayHint(poshold, hold)
-    //   output.push(hint)
-    // })
-    
-    // const holdGrEq = getAllIndexOf(src, ">=")
-    // holdGrEq.forEach((element) => {
-    //   const expected = getExpected(src, element, ">=")
-    //   const poshold = document.positionAt(element + expected.len!)
-    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
-    //   const hint = new vscode.InlayHint(poshold, hold)
-    //   output.push(hint)
-    // })
-    
-    // const holdNot = getAllIndexOf(src, "not")
-    // holdNot.forEach((element) => {
-    //   const expected = getExpectedBool(src, element, "not")
-    //   const poshold = document.positionAt(element + expected.len!)
-    //   const hold = [new vscode.InlayHintLabelPart(expected.str)]
-    //   const hint = new vscode.InlayHint(poshold, hold)
-    //   hint.paddingRight = true
-    //   output.push(hint)
-    // })
-
-
-    // output.push(new vscode.InlayHint(pos, defineHint))
     return output
   }
-  // return function(event: vscode.TextDocumentChangeEvent){
-  //   const doc = event.document
-  //   if (doc.languageId === 'scamper') {
-  //     const src = doc.getText()
-  //     const pos = new vscode.Position(0, 0)
-  //     const hint = new vscode.InlayHint(pos, 'string: hints available here')
-  //     const hints = [hint]
-  //     const provider = new InlayHintsProvider(hints)
-  //     vscode.languages.registerInlayHintsProvider('scamper',
-  //   }
-  // }
+  
 }
