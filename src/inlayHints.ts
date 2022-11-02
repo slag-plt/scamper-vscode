@@ -175,11 +175,12 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
             const errors = holdState.errors
             let position: vscode.Position
             holdState.errors.forEach((err, i) => {
-              error + scamper.detailsToMsgString(err)
-              if (i == errors.length-1){
-                //deal with position
-                // position = new vscode.Position(errors[i].range?.end.line, errors[i].range?.end.column)
-              }
+              error + err.message
+              position = new vscode.Position(errors[i].range!.end.line, errors[i].range!.end.column)
+              const label = [new vscode.InlayHintLabelPart( error)]
+              const hint = new vscode.InlayHint(position, label)
+              hint.paddingLeft = true
+              output.push(hint) 
             })
             break
           }
@@ -196,11 +197,12 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
             const errors = holdState.errors
             let position: vscode.Position
             holdState.errors.forEach((err, i) => {
-              error + scamper.detailsToMsgString(err)
-              if (i == errors.length-1){
-                //deal with position
-                // position = new vscode.Position(errors[i].range?.end.line, errors[i].range?.end.column)
-              }
+              error + err.message
+              position = new vscode.Position(errors[i].range!.end.line, errors[i].range!.end.column)
+              const label = [new vscode.InlayHintLabelPart( error)]
+              const hint = new vscode.InlayHint(position, label)
+              hint.paddingLeft = true
+              output.push(hint) 
             })
             break
           }
@@ -217,11 +219,12 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
             const errors = holdState.errors
             let position: vscode.Position
             holdState.errors.forEach((err, i) => {
-              error + scamper.detailsToMsgString(err)
-              if (i == errors.length-1){
-                //deal with position
-                // position = new vscode.Position(errors[i].range?.end.line, errors[i].range?.end.column)
-              }
+              error + err.message
+              position = new vscode.Position(errors[i].range!.end.line, errors[i].range!.end.column)
+              const label = [new vscode.InlayHintLabelPart( error)]
+              const hint = new vscode.InlayHint(position, label)
+              hint.paddingLeft = true
+              output.push(hint) 
             })
             break
           }
@@ -249,12 +252,13 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
             const error = ""
             const errors = holdState.errors
             let position: vscode.Position
-            holdState.errors.forEach((err, i) => {
-              error + scamper.detailsToMsgString(err)
-              if (i == errors.length-1){
-                //deal with position
-                // position = new vscode.Position(errors[i].range?.end.line, errors[i].range?.end.column)
-              }
+            errors.forEach((err, i) => {
+              error + err.message
+              position = new vscode.Position(errors[i].range!.end.line, errors[i].range!.end.column)
+              const label = [new vscode.InlayHintLabelPart( error)]
+              const hint = new vscode.InlayHint(position, label)
+              hint.paddingLeft = true
+              output.push(hint) 
             })
             break
           }
@@ -280,6 +284,20 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
             const hint = new vscode.InlayHint(position, label)
             hint.paddingLeft = true
             output.push(hint)
+            break
+          }
+          case "error": {
+            const error = ""
+            const errors = holdState.errors
+            let position: vscode.Position
+            holdState.errors.forEach((err, i) => {
+              error + err.message
+              position = new vscode.Position(errors[i].range!.end.line, errors[i].range!.end.column)
+              const label = [new vscode.InlayHintLabelPart( error)]
+              const hint = new vscode.InlayHint(position, label)
+              hint.paddingLeft = true
+              output.push(hint) 
+            })
             break
           }
           default: {
