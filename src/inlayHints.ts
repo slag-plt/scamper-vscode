@@ -162,7 +162,8 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
     }
     
   })
-
+   
+  
   prog?.statements.forEach((statement, index) => {
     let holdState = evaluated[index] //this is the statement that is being evaluated
     
@@ -238,8 +239,9 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
             const column = pos.column >= scamper.expToString(0, statement.value, false).length? pos.column: scamper.expToString(0, statement.value, false).length
             const position = new vscode.Position(pos.line, column)//deal with offset in column
             const expStr =  scamper.expToString(0, holdState.value, false)
-            const label = [new vscode.InlayHintLabelPart(" : "+  expStr)]
+            const label = [new vscode.InlayHintLabelPart( expStr)]
             const hint = new vscode.InlayHint(position, label)
+            hint.paddingLeft = true
             output.push(hint)
             break
           }
@@ -261,6 +263,7 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
             const posH = src.indexOf(expStr) + expStr.length
             const label = [new vscode.InlayHintLabelPart("exp not evaluated "+expStr)]
             const hint = new vscode.InlayHint(document.positionAt(posH), label)
+            hint.paddingLeft = true
             output.push(hint)
             break
           }
@@ -275,6 +278,7 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
             const bool = holdState.passed? "True" : "False"
             const label = [new vscode.InlayHintLabelPart(bool)]
             const hint = new vscode.InlayHint(position, label)
+            hint.paddingLeft = true
             output.push(hint)
             break
           }
@@ -286,6 +290,18 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
       }
     }
   })
+  // const cursorHint: vscode.ProviderResult<vscode.InlayHint[]> = []
+  // const editor = vscode.window.activeTextEditor;
+  // const position = editor?.selection.active;
+
+  // output.forEach((hint) => {
+  //   if (hint.position == position){
+  //     cursorHint.push(hint)
+  //     return cursorHint
+  //   }
+  //   return cursorHint
+  // } 
+  // )
   return output
 }
 /**
@@ -300,6 +316,7 @@ export class mkInlayHints implements vscode.InlayHintsProvider<vscode.InlayHint>
     const src = document.getText()
     const pos = document.positionAt(src.indexOf("define")-1)
     const output: vscode.ProviderResult<vscode.InlayHint[]> = getEvaluated(src, document) //this is the evaluated program
+    
 
     return output
   }
