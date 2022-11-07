@@ -9,6 +9,7 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 		const src = vscode.window.activeTextEditor?.document.getText()
 		if (src === undefined) {
 			vscode.window.showErrorMessage('No source code to run!')
+			return
 		}
 		if (currentPanel !== undefined) {
 			currentPanel.dispose()
@@ -31,7 +32,7 @@ export function traceProgramCommand(extensionUri: vscode.Uri) {
 					<span id="step" class="step-counter">Step</span>
 				</div>
 				<div id="display">
-					<pre id="program" class="program language-racket">${src}</pre>
+					<pre id="program" class="program language-racket">${webview.sanitize(src)}</pre>
 					<form id="repl-form">
 						<vscode-text-area id="input" class="add-statement-input" placeholder="(+ 1 1)">Additional Statements</vscode-text-area>
 					</form>

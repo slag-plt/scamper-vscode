@@ -9,7 +9,10 @@ import * as vscode from 'vscode'
 // why this happens and how to inject code in an appropriate fashion.
 // Maybe this means fully escaping all special HTML entities, not
 // just this combination?
-export const sanitize = (s: string): string => s.replace('<?', '&lt;?')
+export const sanitize = (s: string): string =>
+  s.replace(/&/g, '&amp;')
+   .replace(/</g, '&lt;')
+   .replace(/>/g, '&gt;')
 
 const commonStyleDecl: string = `<style>
   body {
@@ -110,7 +113,7 @@ export function emitHTMLDocument (extensionUri: vscode.Uri, webview: vscode.Webv
     'bundle.js'
   ])
 
-  return sanitize(`<!DOCTYPE html>
+  const src = `<!DOCTYPE html>
   <html lang="en">
   <head>
     <meta charset="UTF-8">
@@ -156,5 +159,7 @@ export function emitHTMLDocument (extensionUri: vscode.Uri, webview: vscode.Webv
       })()
     </script>
   </body>
-  </html>`)
+  </html>`
+  console.log(src)
+  return src
 }
