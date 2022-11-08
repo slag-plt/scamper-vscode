@@ -22,7 +22,7 @@ export function runProgramCommand(extensionUri: vscode.Uri) {
 
 			webview.registerFSHandler(currentPanel.webview)
 
-      let body = `<pre class="scamper-output language-racket">${src}</pre>`
+      let body = `<pre class="scamper-output language-racket">${webview.sanitize(src)}</pre>`
 			currentPanel.webview.html = webview.emitHTMLDocument(extensionUri, currentPanel.webview, '', body)
 		}
 	}

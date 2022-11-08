@@ -9,12 +9,12 @@ function libToHTML(lib: string): string {
   return `
     <vscode-button style="width: 100%;" appearance="primary" class="binding">${lib}</vscode-button>
     <div style="display: none;" class="description">
-      ${Array.from(env.items()).map(b => entryToHTML(b[0], b[1])).join('\n')}
+      ${Array.from(env.items()).sort((a, b) => a[0].localeCompare(b[0])).map(b => entryToHTML(b[0], b[1])).join('\n')}
     </div>
   `
 }
 
-function entryToHTML(name: string, entry: scamper.EnvEntry): string {
+function entryToHTML(name: string, entry: scamper.Lang.EnvEntry): string {
   return `
     <vscode-button style="width: 100%;" appearance="secondary" class="binding">${webview.sanitize(name)}</vscode-button>
     <div style="display: none;" class="description">${entry.doc ? marked(entry.doc.docToMarkdown()) : '<em>No documentation available</em>'}</div> 
