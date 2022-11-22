@@ -158,13 +158,13 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
   let evaluated: Stmt[]
   const t = await resultProg.then((x) => {
     if (x.isFullyEvaluated()){
-      evaluated = x.prog.statements
+      evaluated = x.prog
     }
     
   })
    
   
-  prog?.statements.forEach((statement, index) => {
+  prog?.forEach((statement, index) => {
     let holdState = evaluated[index] //this is the statement that is being evaluated
     
     switch (statement.tag) {
@@ -241,8 +241,8 @@ async function getEvaluated(src: string, document: vscode.TextDocument): Promise
             //using the unevaluated expression to get the position
             const column = pos.column >= scamper.expToString(0, statement.value, false).length? pos.column: scamper.expToString(0, statement.value, false).length
             const position = new vscode.Position(pos.line, column)//deal with offset in column
-            const expStr =  scamper.expToString(0, holdState.value, false)
-            const label = [new vscode.InlayHintLabelPart( expStr)]
+            const expStr =  holdState.output ? holdState.output : 'void'
+            const label = [new vscode.InlayHintLabelPart(expStr)]
             const hint = new vscode.InlayHint(position, label)
             hint.paddingLeft = true
             output.push(hint)
