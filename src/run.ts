@@ -17,8 +17,9 @@ export function runProgramCommand(extensionUri: vscode.Uri) {
 			currentPanel = vscode.window.createWebviewPanel(
 				'scamper-exploration',
 				`Scamper: Output`,
-				vscode.ViewColumn.Beside,
-				{ enableScripts: true })
+				vscode.ViewColumn.Beside, {
+					enableScripts: true,
+				})
 
 			webview.registerFSHandler(currentPanel.webview)
 
