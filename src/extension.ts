@@ -19,7 +19,8 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider('scamper', new DocFormatter()))
 
-  context.subscriptions.push(vscode.languages.registerInlayHintsProvider('scamper', new mkInlayHints()))
+  // TODO: temporarily off until we filter output a bit more cleanly
+  // context.subscriptions.push(vscode.languages.registerInlayHintsProvider('scamper', new mkInlayHints()))
   console.log('scamper-vscode extension loaded!')
 }
 
