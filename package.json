@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/slag-plt/scamper-vscode.git"
   },
-  "version": "1.5.13",
+  "version": "1.5.24",
   "engines": {
     "vscode": "^1.68.1"
   },
@@ -125,7 +125,8 @@
   },
   "dependencies": {
     "@vscode/webview-ui-toolkit": "^1.0.0",
+    "jazz-midi": "^1.7.9",
     "marked": "^4.0.18",
-    "scamper-lang": "^1.5.13"
+    "scamper-lang": "^1.5.24"
   }
 }
