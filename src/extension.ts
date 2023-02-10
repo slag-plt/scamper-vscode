@@ -1,9 +1,10 @@
-import * as vscode from 'vscode'
+import * as vscode from 'vscode';
 import { DocProvider } from './docs'
 import { DocFormatter } from './formatter'
 import { traceProgramCommand } from './exploration'
 import { mkDiagnosticsCallback } from './diagnostics'
 import { runProgramCommand } from './run'
+import { mkInlayHints } from './inlayHints';
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand('scamper.traceProgram', traceProgramCommand(context.extensionUri)))
@@ -18,6 +19,8 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider('scamper', new DocFormatter()))
 
+  // TODO: temporarily off until we filter output a bit more cleanly
+  // context.subscriptions.push(vscode.languages.registerInlayHintsProvider('scamper', new mkInlayHints()))
   console.log('scamper-vscode extension loaded!')
 }
 
