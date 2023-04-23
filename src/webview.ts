@@ -146,7 +146,6 @@ export function emitHTMLDocument (extensionUri: vscode.Uri, webview: vscode.Webv
           }
         }
 
-        registerFs('', new Provider())
         replaceCodeWidgets()
       })()
     </script>
