@@ -23,6 +23,10 @@ const commonStyleDecl: string = `<style>
     margin-bottom: 2em;
   }
 
+  .program {
+    padding-bottom: 1em;
+  }
+
   #panel {
     display: flex;
     height: 100%;
