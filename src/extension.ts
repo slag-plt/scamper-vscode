@@ -6,10 +6,12 @@ import { mkDiagnosticsCallback } from './diagnostics'
 import { runProgramCommand } from './run'
 import { mkInlayHints } from './inlayHints';
 
+const scamperVersion = "1.5.35"
+
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand('scamper.traceProgram', traceProgramCommand(context.extensionUri)))
 
-  context.subscriptions.push(vscode.commands.registerCommand('scamper.runProgram', runProgramCommand(context.extensionUri)))
+  context.subscriptions.push(vscode.commands.registerCommand('scamper.runProgram', runProgramCommand(scamperVersion, context.extensionUri)))
 
   const diagnostics = vscode.languages.createDiagnosticCollection('scm');
   vscode.workspace.onDidChangeTextDocument(mkDiagnosticsCallback(diagnostics))
