@@ -6,7 +6,7 @@ import { mkDiagnosticsCallback } from './diagnostics'
 import { runProgramCommand } from './run'
 import { mkInlayHints } from './inlayHints';
 
-const scamperVersion = "1.5.36"
+const scamperVersion = "1.5.37"
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand('scamper.traceProgram', traceProgramCommand(context.extensionUri)))
